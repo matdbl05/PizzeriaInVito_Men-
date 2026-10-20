@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzeria Invito - Marostica</title>
+    <!-- Google Fonts: Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: #fcfbfa; color: #333; }
+
+        /* --- SEZIONI (GESTIONE VISIBILITÀ) --- */
+        .page-section {
+            display: none;
+            min-height: calc(100vh - 70px);
+        }
+        .page-section.active-section {
+            display: block;
+        }
+
+        /* --- STILI HOME SPLASH --- */
+        #home-screen {
+            background-color: #789988; /* Verde salvia ispirato al logo */
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            text-align: center;
+        }
+        .welcome-container {
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .logo-img-large {
+            width: 100%;
+            max-width: 280px;
+            height: auto;
+            border-radius: 50%;
+            margin-bottom: 35px;
+            border: 4px solid #ffffff;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            animation: fadeInDown 0.8s ease;
+        }
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 260px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease 0.4s forwards;
+        }
+        .nav-btn-home {
+            background-color: #ffffff;
+            color: #789988;
+            padding: 12px 26px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+        .nav-btn-home:hover {
+            background-color: #f4f4f4;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- HEADER COMUNE --- */
+        header { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .navbar { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; }
+        .nav-logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; }
+        .nav-logo-img { height: 45px; width: 45px; border-radius: 50%; object-fit: cover; }
+        .nav-logo-text { font-weight: 800; font-size: 1.1rem; color: #789988; letter-spacing: 0.5px; text-transform: uppercase; }
+        
+        .nav-links { list-style: none; display: flex; gap: 20px; align-items: center; }
+        .nav-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.9rem; transition: color 0.3s; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-links a:hover, .nav-links a.active { color: #789988; }
+        .social-nav-btn { background-color: #789988; color: white !important; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem !important; }
+        .social-nav-btn:hover { background-color: #637d70 !important; }
+
+        /* --- SEZIONI CONTENUTO --- */
+        .content-section { padding: 50px 20px; max-width: 1000px; margin: 0 auto; }
+        .content-section h2 { font-size: 2.2rem; font-weight: 800; color: #789988; text-align: center; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 1px; }
+        .content-section h2::after { content: ''; width: 50px; height: 4px; background-color: #789988; display: block; margin: 10px auto 0; border-radius: 2px; }
+
+        /* --- CHI SIAMO / STORIA --- */
+        .story-container { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 6px 20px rgba(0,0,0,0.04); line-height: 1.8; font-size: 1.05rem; color: #444; text-align: center; max-width: 800px; margin: 0 auto 30px auto; }
+        .story-container p { margin-bottom: 20px; }
+        .story-container p:last-child { margin-bottom: 0; }
+        .story-quote { font-weight: 700; color: #789988; font-size: 1.2rem; margin-top: 30px; display: block; }
+
+        /* --- MENU --- */
+        .menu-category { margin-bottom: 45px; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .menu-category h3 { font-size: 1.4rem; font-weight: 700; color: #222; margin-bottom: 20px; border-bottom: 2px solid #789988; padding-bottom: 8px; text-transform: uppercase; }
+
+        .menu-item { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; border-bottom: 1px dotted #eee; padding-bottom: 10px; }
+        .menu-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .menu-item-info { max-width: 80%; }
+        .menu-item-name { font-weight: 700; font-size: 1.05rem; color: #222; }
+        .menu-item-ingredients { font-size: 0.88rem; color: #666; margin-top: 3px; }
+        .menu-item-price { font-weight: 800; color: #789988; font-size: 1.1rem; }
+        
+        .menu-legend { margin-top: 20px; font-size: 0.85rem; color: #666; font-style: italic; text-align: right; }
+
+        /* --- ORARI & DOVE SIAMO (COLONNA UNICA CENTRATA) --- */
+        .info-column-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .info-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 6px 20px rgba(0,0,0,0.04); text-align: center; width: 100%; }
+        .info-card h3 { margin-bottom: 15px; color: #222; font-size: 1.2rem; font-weight: 700; }
+        .info-card p { color: #555; line-height: 1.6; font-size: 0.95rem; }
+
+        .hours-table { width: 100%; margin-top: 10px; border-collapse: collapse; text-align: left; }
+        .hours-table tr { border-bottom: 1px solid #eee; }
+        .hours-table tr:last-child { border-bottom: none; }
+        .hours-table td { padding: 8px 0; font-size: 0.9rem; color: #444; }
+        .hours-table td.day { font-weight: 600; text-transform: capitalize; }
+        .hours-table td.time { text-align: right; font-weight: 700; color: #789988; }
+        .hours-table td.closed { text-align: right; font-weight: 600; color: #888; }
+
+        .btn-map { background-color: #789988; color: white; padding: 10px 22px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 0.9rem; display: inline-block; transition: background 0.3s; margin-top: 15px; }
+        .btn-map:hover { background-color: #637d70; }
+
+        /* --- CONTATTI --- */
+        .contact-section-wrapper { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; min-height: 50vh; }
+        .phone-large { font-size: 2.2rem; color: #789988; font-weight: 800; text-decoration: none; margin: 15px 0 5px 0; display: inline-block; transition: opacity 0.2s; }
+        .phone-large:hover { opacity: 0.8; }
+        .whatsapp-subtext { font-size: 0.95rem; color: #666; font-weight: 500; margin-bottom: 25px; }
+
+        .social-buttons-container { display: flex; gap: 15px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+        .social-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 25px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: transform 0.2s, opacity 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .social-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        .btn-instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; }
+        .btn-review { background-color: #789988; color: white; }
+        .btn-review:hover { background-color: #637d70; }
+
+        /* --- TASTO TORNA ALLA HOME --- */
+        .back-home-container { text-align: center; margin-top: 45px; margin-bottom: 10px; }
+        .btn-back-home {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: inline-block;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .btn-back-home:hover { background-color: #789988; }
+
+        /* --- FOOTER --- */
+        footer { background-color: #222; color: #aaa; text-align: center; padding: 35px 20px; font-size: 0.85rem; margin-top: 40px; }
+        footer p { margin-bottom: 5px; }
+
+        @media (max-width: 768px) { .nav-links { display: none; } }
+    </style>
+</head>
+<body>
+
+    <!-- 1. HOME / SPLASH SCREEN -->
+    <div id="home-screen" class="page-section active-section">
+        <div class="welcome-container">
+            <img src="logo_vito.jpg" alt="Logo Pizzeria Invito" class="logo-img-large">
+            <div class="nav-buttons">
+                <a onclick="switchPage('menu')" class="nav-btn-home">Menu</a>
+                <a onclick="switchPage('chisiamo')" class="nav-btn-home">Chi Siamo</a>
+                <a onclick="switchPage('orari')" class="nav-btn-home">Orari & Dove</a>
+                <a onclick="switchPage('contatti')" class="nav-btn-home">Contatti</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- WRAPPER PER LE PAGINE INTERNE (HEADER COMUNE) -->
+    <div id="main-site-wrapper" style="display: none;">
+        <header>
+            <nav class="navbar">
+                <a onclick="switchPage('home')" class="nav-logo-container">
+                    <img src="logo_vito.jpg" alt="Pizzeria Invito" class="nav-logo-img">
+                    <span class="nav-logo-text">Pizzeria Invito</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a onclick="switchPage('home')" id="link-home">Home</a></li>
+                    <li><a onclick="switchPage('menu')" id="link-menu">Menu</a></li>
+                    <li><a onclick="switchPage('chisiamo')" id="link-chisiamo">Chi Siamo</a></li>
+                    <li><a onclick="switchPage('orari')" id="link-orari">Orari & Dove</a></li>
+                    <li><a onclick="switchPage('contatti')" id="link-contatti">Contatti</a></li>
+                    <li><a href="https://www.instagram.com/invitopizzeria" target="_blank" class="social-nav-btn">Instagram</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- 2. MENU PAGE -->
+        <div id="menu-section" class="page-section content-section">
+            <h2>Il Nostro Menu</h2>
+            
+            <div class="menu-category">
+                <h3>LE INVITANTI</h3>
+                
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">CAMPAGNOLA</div>
+                        <div class="menu-item-ingredients">Salsa di pomodoro, <strong>fior di latte</strong>, salsiccia, lampascioni, formaggio <strong>Asiago</strong>, <strong>semi</strong> di finocchio</div>
+                    </div>
+                    <div class="menu-item-price">13</div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">FINOCCHIONA</div>
+                        <div class="menu-item-ingredients">Salsa di pomodoro, <strong>fior di latte</strong>, salsiccia, finocchio, <strong>taleggio</strong>, <strong>noci</strong></div>
+                    </div>
+                    <div class="menu-item-price">13</div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">IN BRACE</div>
+                        <div class="menu-item-ingredients">Salsa di pomodoro, <strong>fior di latte</strong>, cotto alla brace, cipolla di Tropea e <strong>provola</strong> a fette</div>
+                    </div>
+                    <div class="menu-item-price">13</div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">INCANTO</div>
+                        <div class="menu-item-ingredients"><strong>Fior di latte</strong>, base crema di zucca, porro, <strong>gorgonzola</strong> e radicchio</div>
+                    </div>
+                    <div class="menu-item-price">13</div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">GEMMA 🌿</div>
+                        <div class="menu-item-ingredients">Salsa di pomodoro, pomodori soleggiati, melanzane, olive taggiasche, avocado e hummus di ceci</div>
+                    </div>
+                    <div class="menu-item-price">13</div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">INNAMORATA</div>
+                        <div class="menu-item-ingredients">Salsa di pomodoro, <strong>fior di latte</strong>, zucca al forno, cipolla di Tropea, straccetti di speck e <strong>stracchino</strong></div>
+                    </div>
+                    <div class="menu-item-price">13</div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">ORO D'AUTUNNO</div>
+                        <div class="menu-item-ingredients">Salsa di pomodoro, <strong>fior di latte</strong>, zucca al forno, pancetta affumicata, <strong>provola</strong> a fette e crema al rosmarino</div>
+                    </div>
+                    <div class="menu-item-price">13</div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">PULLED PORK</div>
+                        <div class="menu-item-ingredients">Impasto gourmet con <strong>fior di latte</strong>, cipolla di tropea, pulled pork e salsa bbq servita a parte</div>
+                    </div>
+                    <div class="menu-item-price">13</div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">PEPERINA</div>
+                        <div class="menu-item-ingredients">Salsa di pomodoro, <strong>fior di latte</strong>, radicchio, <strong>taleggio</strong> e pancetta nostrana al pepe</div>
+                    </div>
+                    <div class="menu-item-price">12,5</div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">SAPORI DEL SUD</div>
+                        <div class="menu-item-ingredients">Salsa di pomodoro, <strong>fior di latte</strong>, friarielli, pomodori secchi, <strong>burrata</strong>, <strong>acciughe</strong></div>
+                    </div>
+                    <div class="menu-item-price">13,5</div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">SCAMORZINA</div>
+                        <div class="menu-item-ingredients">Salsa di pomodoro, <strong>fior di latte</strong>, <strong>scamorzine</strong> al bacon, radicchio e <strong>noci</strong></div>
+                    </div>
+                    <div class="menu-item-price">13</div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">SEMI E NATURA 🌿</div>
+                        <div class="menu-item-ingredients">Salsa di pomodoro, <strong>mozzarisella</strong>, verdure di stagione, <strong>tofu</strong> fumé e fantasia di <strong>semi</strong></div>
+                    </div>
+                    <div class="menu-item-price">14</div>
+                </div>
+
+                <div class="menu-legend">🌿 = VEGAN</div>
+            </div>
+
+            <div class="back-home-container">
+                <a onclick="switchPage('home')" class="btn-back-home">← Torna alla Home</a>
+            </div>
+        </div>
+
+        <!-- 3. CHI SIAMO PAGE -->
+        <div id="chisiamo-section" class="page-section content-section">
+            <h2>Chi Siamo</h2>
+            <div class="story-container">
+                <p>Pizzeria Invito nasce dalle mani in pasta di papà Vito e dalla solarità di Laura, a gennaio 2020, con vista sul maestoso castello di Marostica e a pochi passi dalla piazza.</p>
+                <p>Da allora abbiamo attraversato una pandemia, festeggiato l'apertura del nostro giardino d'ortensia, ricevuto il riconoscimento del 1° posto nella Guida del GDV e condiviso con voi numerose serate celebrate con calore, sorrisi e tanta passione.</p>
+                <span class="story-quote">"Perché, in fondo, ogni nostra pizza è un abbraccio."</span>
+            </div>
+
+            <div class="story-container">
+                <p>Una pizza calda al centro del tavolo...</p>
+                <p>Le risate dei bambini, un po' di caos, qualche briciola ovunque e magari anche con qualche bicchiere rovesciato sopra alla tavola.</p>
+                <p>Non importa se sarà rumoroso.</p>
+                <p>Non importa se non sarà perfetto.</p>
+                <p>I vostri figli si ricorderanno di essere andati a mangiare la pizza tutti insieme, di aver condiviso un momento vero semplice, pieno d'amore ❤️</p>
+            </div>
+
+            <div class="back-home-container">
+                <a onclick="switchPage('home')" class="btn-back-home">← Torna alla Home</a>
+            </div>
+        </div>
+
+        <!-- 4. ORARI & DOVE SIAMO PAGE -->
+        <div id="orari-section" class="page-section content-section">
+            <h2>Orari & Dove Siamo</h2>
+            <div class="info-column-container">
+                <div class="info-card">
+                    <h3>🕒 Orari di Apertura</h3>
+                    <table class="hours-table">
+                        <tr><td class="day">lunedì</td><td class="closed">Chiuso</td></tr>
+                        <tr><td class="day">martedì</td><td class="time">18–23</td></tr>
+                        <tr><td class="day">mercoledì</td><td class="time">18–23</td></tr>
+                        <tr><td class="day">giovedì</td><td class="time">18–23</td></tr>
+                        <tr><td class="day">venerdì</td><td class="time">18–23</td></tr>
+                        <tr><td class="day">sabato</td><td class="time">18–23</td></tr>
+                        <tr><td class="day">domenica</td><td class="time">18–23</td></tr>
+                    </table>
+                </div>
+
+                <div class="info-card">
+                    <h3>📍 Dove Siamo</h3>
+                    <p style="margin-bottom: 15px;">
+                        <strong>Via Campo Sportivo, 36063 Marostica VI</strong><br>
+                        <span style="font-size: 0.85rem; color: #666;">A pochi passi dalla piazza e con vista sul castello.</span>
+                    </p>
+                    <a href="https://www.google.com/maps/place/Pizzeria+InVito+Marostica/@45.7412538,11.6547374,608m/data=!3m2!1e3!4b1!4m6!3m5!1s0x4778cf519ff8fad9:0x84b4a73ee290a97b!8m2!3d45.7412538!4d11.6573123!16s%2Fg%2F11j4wqtxnc?entry=ttu&g_ep=EgoyMDI2MTAxNC4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="btn-map">Apri su Google Maps</a>
+                </div>
+            </div>
+
+            <div class="back-home-container">
+                <a onclick="switchPage('home')" class="btn-back-home">← Torna alla Home</a>
+            </div>
+        </div>
+
+        <!-- 5. CONTATTI PAGE -->
+        <div id="contatti-section" class="page-section">
+            <div class="content-section contact-section-wrapper">
+                <h2>Contatti</h2>
+                <div class="info-card">
+                    <p>Vieni a trovarci o contattaci per prenotare il tuo tavolo o ordinare la tua pizza:</p>
+                    <a href="tel:3339770066" class="phone-large">333 977 0066</a>
+                    <div class="whatsapp-subtext">Anche su Whatsapp</div>
+                    
+                    <div class="social-buttons-container">
+                        <a href="https://www.instagram.com/invitopizzeria" target="_blank" class="social-btn btn-instagram">
+                            📸 Seguici su Instagram
+                        </a>
+                        <a href="https://www.google.com/maps/place/Pizzeria+InVito+Marostica/@45.7412538,11.6573123,608m/data=!3m1!1e3!4m8!3m7!1s0x4778cf519ff8fad9:0x84b4a73ee290a97b!8m2!3d45.7412538!4d11.6573123!9m1!1b1!16s%2Fg%2F11j4wqtxnc?entry=ttu&g_ep=EgoyMDI2MTAxNC4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="social-btn btn-review">
+                            ⭐ Lascia una recensione
+                        </a>
+                    </div>
+                </div>
+
+                <div class="back-home-container">
+                    <a onclick="switchPage('home')" class="btn-back-home">← Torna alla Home</a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Pizzeria Invito - Marostica (VI) - Tutti i diritti riservati.</p>
+        </footer>
+    </div>
+
+    <!-- SCRIPT JAVASCRIPT PER GESTIRE IL PASSAGGIO DA UNA "PAGINA" ALL'ALTRA -->
+    <script>
+        function switchPage(pageId) {
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('main-site-wrapper').style.display = 'none';
+            
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(sec => sec.classList.remove('active-section'));
+            
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => link.classList.remove('active'));
+
+            if (pageId === 'home') {
+                document.getElementById('home-screen').style.display = 'flex';
+                document.getElementById('home-screen').classList.add('active-section');
+            } else {
+                document.getElementById('main-site-wrapper').style.display = 'block';
+                const targetSection = document.getElementById(pageId + '-section');
+                if (targetSection) {
+                    targetSection.classList.add('active-section');
+                }
+                const activeLink = document.getElementById('link-' + pageId);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
